@@ -1,4 +1,4 @@
-package com.bawp.jetweatherforecast.screens.splash
+package com.bawp.jetweatherforecast.screens
 
 import android.view.animation.OvershootInterpolator
 import androidx.compose.animation.core.Animatable
@@ -25,31 +25,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bawp.jetweatherforecast.R
-import com.bawp.jetweatherforecast.navigation.WeatherScreens
+import com.bawp.jetweatherforecast.navigation.WeaterScreens
 import kotlinx.coroutines.delay
 
 @Composable
 fun WeatherSplashScreen(navController: NavController) {
-    val defaultCity = "San Diego"
+
     val scale = remember {
         Animatable(0f)
     }
 
     LaunchedEffect(key1 = true, block = {
-        scale.animateTo(targetValue = 0.9f,
-                       animationSpec = tween(
-                            durationMillis = 800,
-                           easing = {
-                                 OvershootInterpolator(8f)
-                                     .getInterpolation(it)
-                           }))
-
-         delay(2000L)
-        navController.navigate(WeatherScreens.MainScreen.name +"/$defaultCity")
-    } )
-
-
-
+        scale.animateTo(
+            targetValue = 0.9f,
+            animationSpec = tween(
+                durationMillis = 500,
+                easing = {
+                    OvershootInterpolator(8f).getInterpolation(it)
+                }
+            )
+        )
+        delay(500L)
+        navController.navigate(WeaterScreens.MainScreen.name)
+    })
 
     Surface(
         modifier = Modifier
@@ -59,21 +57,27 @@ fun WeatherSplashScreen(navController: NavController) {
         shape = CircleShape,
         color = Color.White,
         border = BorderStroke(
-            width = 2.dp, color = Color.LightGray
-                             )
-           ) {
-        Column(modifier = Modifier.padding(1.dp),
-              horizontalAlignment = Alignment.CenterHorizontally,
-              verticalArrangement = Arrangement.Center) {
-            Image(painter = painterResource(id = R.drawable.sun),
+            width = 2.dp,
+            color = Color.LightGray
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(1.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.sun),
                 contentDescription = "sunny icon",
                 contentScale = ContentScale.Fit,
-                 modifier = Modifier.size(95.dp))
-             Text(text = "Find the Sun?",
-                 style = MaterialTheme.typography.h5,
-                 color = Color.LightGray)
+                modifier = Modifier.size(95.dp)
+            )
+            Text(
+                text = "Find the Sun?",
+                style = MaterialTheme.typography.h5,
+                color = Color.LightGray
+            )
         }
-
-
     }
 }
