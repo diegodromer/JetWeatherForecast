@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.bawp.jetweatherforecast"
-        minSdk 29
-        targetSdk 31
+        minSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -50,6 +50,9 @@ android {
 }
 
 dependencies {
+
+    //splash screen android
+    implementation 'androidx.core:core-splashscreen:1.0.0'
 
     //Dagger - Hilt
     implementation 'com.google.dagger:hilt-android:2.39'

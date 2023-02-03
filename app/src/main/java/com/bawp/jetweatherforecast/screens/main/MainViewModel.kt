@@ -9,6 +9,9 @@ import com.bawp.jetweatherforecast.data.DataOrException
 import com.bawp.jetweatherforecast.model.Weather
 import com.bawp.jetweatherforecast.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

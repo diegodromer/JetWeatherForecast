@@ -1,33 +1,156 @@
 package com.bawp.jetweatherforecast.screens
 
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Text
+import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.produceState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.bawp.jetweatherforecast.R
 import com.bawp.jetweatherforecast.data.DataOrException
 import com.bawp.jetweatherforecast.model.Weather
+import com.bawp.jetweatherforecast.model.WeatherItem
+import com.bawp.jetweatherforecast.navigation.WeaterScreens
 import com.bawp.jetweatherforecast.screens.main.MainViewModel
+import com.bawp.jetweatherforecast.utils.formatDate
+import com.bawp.jetweatherforecast.utils.formatDateTime
+import com.bawp.jetweatherforecast.utils.formatDecimals
+import com.bawp.jetweatherforecast.widgets.*
+import okhttp3.internal.wait
 
 @Composable
-fun MainScreen(navController: NavController, mainViewModel: MainViewModel = hiltViewModel()) {
-    ShowData(mainViewModel)
-}
-
-@Composable
-fun ShowData(mainViewModel: MainViewModel) {
+fun MainScreen(
+    navController: NavController,
+    mainViewModel: MainViewModel = hiltViewModel(),
+    city: String?
+) {
+    Log.d("TAG", "MainScreen: $city")
 
     val weatherData = produceState<DataOrException<Weather, Boolean, Exception>>(
-        initialValue = DataOrException(loading = true),
+        initialValue = DataOrException(loading = true)
     ) {
-        value = mainViewModel.getWeatherData(city = "Portland")
+        value = mainViewModel.getWeatherData(city = city.toString())
     }.value
 
     if (weatherData.loading == true) {
         CircularProgressIndicator()
-    }else if (weatherData.data != null) {
-
-        Text(text = "Main screen ${weatherData.data!!.toString()}")
+    } else if (weatherData.data != null) {
+        MainScaffold(weather = weatherData.data!!, navController = navController)
     }
 }
+
+@Composable
+fun MainScaffold(
+    weather: Weather,
+    navController: NavController,
+) {
+    Scaffold(
+        topBar = {
+            WeatherAppBar(
+                title = weather.city.name + ", " + "${weather.city.country}",
+                navController = navController,
+                onAddActionClicked = {
+                    navController.navigate(WeaterScreens.SearchScreen.name)
+                },
+                elevation = 5.dp
+            ) {
+                Log.d("TAG", "MainScaffold: Button Clicked")
+            }
+        }
+    ) {
+        MainContent(data = weather)
+    }
+}
+
+@Composable
+fun MainContent(data: Weather) {
+
+    val weatherItem = data.list[0]
+    val imagesUrl = "https://openweathermap.org/img/wn/${weatherItem.weather[0].icon}.png"
+
+    Column(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = formatDate(weatherItem.dt),
+            style = MaterialTheme.typography.caption,
+            color = MaterialTheme.colors.onSecondary,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(6.dp)
+        )
+
+        Surface(
+            modifier = Modifier
+                .padding(4.dp)
+                .size(200.dp),
+            shape = CircleShape,
+            color = Color(0xFFFFC400)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                WeatherStateImage(imageUrl = imagesUrl)
+                //image
+                Text(
+                    text = formatDecimals(weatherItem.temp.day) + "º",
+                    style = MaterialTheme.typography.h4,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Text(
+                    text = weatherItem.weather[0].main,
+                    fontStyle = FontStyle.Italic
+                )
+            }
+        }
+        HumidityWindPressureRow(weather = data.list[0])
+        Divider()
+        SunsetSunRiseRow(weather = data.list[0])
+        Text(
+            text = "This Week",
+            style = MaterialTheme.typography.caption,
+            fontWeight = FontWeight.Bold
+        )
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight(),
+            color = Color(0xFFEEF1EF),
+            shape = RoundedCornerShape(size = 14.dp)
+        ) {
+            LazyColumn(
+                modifier = Modifier.padding(2.dp),
+                contentPadding = PaddingValues(1.dp)
+            ) {
+                items(items = data.list) { item: WeatherItem ->
+                    WeatherDetailRow(weather = item)
+                }
+            }
+        }
+    }
+}
+
+
