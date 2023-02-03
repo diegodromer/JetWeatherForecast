@@ -1,6 +1,6 @@
 package com.bawp.jetweatherforecast.navigation
 
-enum class WeaterScreens {
+enum class WeatherScreens {
     SplashScreen,
     MainScreen,
     AboutScreen,

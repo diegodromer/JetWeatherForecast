@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bawp.jetweatherforecast.R
-import com.bawp.jetweatherforecast.navigation.WeaterScreens
+import com.bawp.jetweatherforecast.navigation.WeatherScreens
 import kotlinx.coroutines.delay
 
 @Composable
@@ -46,7 +46,7 @@ fun WeatherSplashScreen(navController: NavController) {
             )
         )
         delay(500L)
-        navController.navigate(WeaterScreens.MainScreen.name + "/$defaultCity")
+        navController.navigate(WeatherScreens.MainScreen.name + "/$defaultCity")
     })
 
     Surface(

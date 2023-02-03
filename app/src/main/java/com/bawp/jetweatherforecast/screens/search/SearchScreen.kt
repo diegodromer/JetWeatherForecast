@@ -1,6 +1,5 @@
 package com.bawp.jetweatherforecast.screens.search
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,7 +24,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.bawp.jetweatherforecast.navigation.WeaterScreens
+import com.bawp.jetweatherforecast.navigation.WeatherScreens
 import com.bawp.jetweatherforecast.widgets.WeatherAppBar
 
 @ExperimentalComposeUiApi
@@ -54,7 +53,7 @@ fun SearchScreen(navController: NavController) {
                         .padding(16.dp)
                         .align(Alignment.CenterHorizontally)
                 ) { mCity ->
-                    navController.navigate(WeaterScreens.MainScreen.name + "/$mCity")
+                    navController.navigate(WeatherScreens.MainScreen.name + "/$mCity")
                 }
             }
         }

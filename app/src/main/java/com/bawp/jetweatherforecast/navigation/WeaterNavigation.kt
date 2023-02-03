@@ -24,13 +24,13 @@ fun WeaterNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = WeaterScreens.SplashScreen.name
+        startDestination = WeatherScreens.SplashScreen.name
     ) {
-        composable(WeaterScreens.SplashScreen.name) {
+        composable(WeatherScreens.SplashScreen.name) {
             WeatherSplashScreen(navController = navController)
         }
 
-        val route = WeaterScreens.MainScreen.name
+        val route = WeatherScreens.MainScreen.name
         composable(
             "$route/{city}",
             arguments = listOf(
@@ -51,19 +51,19 @@ fun WeaterNavigation() {
             }
         }
 
-        composable(WeaterScreens.SearchScreen.name) {
+        composable(WeatherScreens.SearchScreen.name) {
             SearchScreen(navController = navController)
         }
 
-        composable(WeaterScreens.AboutScreen.name) {
+        composable(WeatherScreens.AboutScreen.name) {
             AboutScreen(navController = navController)
         }
 
-        composable(WeaterScreens.SettingsScreen.name) {
+        composable(WeatherScreens.SettingsScreen.name) {
             SettingsScreen(navController = navController)
         }
 
-        composable(WeaterScreens.FavoriteScreen.name) {
+        composable(WeatherScreens.FavoriteScreen.name) {
             FavoritesScreen(navController = navController)
         }
     }
