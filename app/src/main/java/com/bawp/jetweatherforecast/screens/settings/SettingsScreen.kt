@@ -7,11 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -22,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.bawp.jetweatherforecast.model.Unit
 import com.bawp.jetweatherforecast.widgets.WeatherAppBar
 
 @Composable
@@ -33,14 +30,15 @@ fun SettingsScreen(
     var unitToggleState by remember {
         mutableStateOf(false)
     }
-    val measurementUnits = listOf(
-        "Imperial (F)",
-        "Metric (C)"
-    )
+
+    val measurementUnits = listOf("Imperial (F)", "Metric (C)")
+
+    val choiceFromDb = settingsViewModel.unitList.collectAsState().value
+
+    val defaultChoice = if(choiceFromDb.isNullOrEmpty()) measurementUnits[0]
+                        else choiceFromDb[0].unit
     var choiceState by remember {
-        mutableStateOf(
-            ""
-        )
+        mutableStateOf(defaultChoice)
     }
 
     Scaffold(
@@ -72,9 +70,9 @@ fun SettingsScreen(
                     checked = !unitToggleState,
                     onCheckedChange = {
                         unitToggleState = !it
-                        if (unitToggleState) {
-                            choiceState = "Imperial (F)"
-                        } else choiceState = "Metric (C)"
+                        choiceState = if (unitToggleState) {
+                            "Imperial (F)"
+                        } else "Metric (C)"
                     },
                     Modifier
                         .fillMaxWidth(0.5f)
@@ -89,7 +87,8 @@ fun SettingsScreen(
                 }
                 Button(
                     onClick = {
-                         settingsViewModel.removeAllUnits()
+                        settingsViewModel.removeAllUnits()
+                        settingsViewModel.insertUnit(Unit(unit = choiceState))
                     },
                     Modifier
                         .padding(3.dp)
